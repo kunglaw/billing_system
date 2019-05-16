@@ -406,7 +406,7 @@
 				$.ajax({
 					data 	: { tgl_start : start, tgl_finish : finish, client_id : client},
 					type	: "post",
-					url		: "<?php echo base_url()?>billing/get_kwh",
+					url		: "<?php echo base_url()?>/index.php/billing/get_kwh",
 					success	: function(response)
 					{
 						$("#max_kwh").val(response.maximum);
