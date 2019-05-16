@@ -32,7 +32,7 @@
 				    <!--Tag Box v5-->
 					<div class="row tag-box tag-box-v5">
 						
-						<form action="<?php echo base_url()?>/index.php/riwayat_kwh/export" method="post" class="sky-form" enctype="multipart/form-data">
+						<form action="<?php echo base_url()?>riwayat_kwh/export" method="post" class="sky-form" enctype="multipart/form-data">
 						<div class="col-md-9">
 							<label for="file" class="input input-file">
 									<div class="button"><input name="file" type="file">Browse</div><input placeholder="Import data excel" readonly="" type="text">
@@ -101,44 +101,7 @@
 		
 	</div><!--/wrapper-->
 
-	
-
-	<!-- JS Global Compulsory -->
-	<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="assets/plugins/jquery/jquery-migrate.min.js"></script>
-	<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<!-- JS Implementing Plugins -->
-	<script type="text/javascript" src="assets/plugins/back-to-top.js"></script>
-	<script type="text/javascript" src="assets/plugins/smoothScroll.js"></script>
-	<script type="text/javascript" src="assets/plugins/counter/waypoints.min.js"></script>
-	<script type="text/javascript" src="assets/plugins/counter/jquery.counterup.min.js"></script>
-	<script type="text/javascript" src="assets/plugins/sky-forms-pro/skyforms/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js"></script>
-	<!-- JS Customization -->
-	<script type="text/javascript" src="assets/js/custom.js"></script>
-	<!-- JS Page Level -->
-	<script type="text/javascript" src="assets/js/app.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/datepicker.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/style-switcher.js"></script>
-	<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
-	
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			App.init();
-			App.initCounter();
-			App.initScrollBar();
-			Datepicker.initDatepicker();
-			StyleSwitcher.initStyleSwitcher();
-			$('#mytable').DataTable();
-		});
-	</script>
-	
-
-	<!--[if lt IE 9]>
-	<script src="assets/plugins/respond.js"></script>
-	<script src="assets/plugins/html5shiv.js"></script>
-	<script src="assets/plugins/placeholder-IE-fixes.js"></script>
-	<![endif]-->
+	<?php $this->load->view("components/js_under") ?>
 </body>
 
 <!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 13:40:32 GMT -->
