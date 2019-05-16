@@ -75,7 +75,7 @@ class Riwayat_kwh extends CI_Controller {
 						
 						$value = $data_value;
 						$NoId += 1;
-						$posisi_tanggal = date('Y-m-d H:i:s', strtotime($posisi_tanggal));
+						$posisi_tanggal = date('Y-m-d g:i:s A', strtotime($posisi_tanggal));
 						$jam = date('G', strtotime($posisi_tanggal));
 						$type = "lwbp";
 						if( 17 < $jam && $jam < 22 ) { 
