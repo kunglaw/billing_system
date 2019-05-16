@@ -28,6 +28,7 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/scrollbar/css/jquery.mCustomScrollbar.css">
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/jquery.dataTables.min.css">
 
 	<!-- CSS Page Style -->
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/pages/profile.css">
