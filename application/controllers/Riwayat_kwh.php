@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class riwayat_kwh extends CI_Controller {
+class Riwayat_kwh extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -75,7 +75,12 @@ class riwayat_kwh extends CI_Controller {
 						
 						$value = $data_value;
 						$NoId += 1;
-						$posisi_tanggal = date('Y-m-d H:i:s', strtotime($posisi_tanggal));
+						$posisi_tanggal = date('Y-m-d g:i:s A', strtotime($posisi_tanggal));
+						$jam = date('G', strtotime($posisi_tanggal));
+						$type = "lwbp";
+						if( 17 < $jam && $jam < 22 ) { 
+							$type = "wbp";
+						}
 
 						$str = "
 							SELECT * FROM tb_riwayat 
@@ -93,7 +98,8 @@ class riwayat_kwh extends CI_Controller {
 							$data_row = array(
 								'No_ID' 	=> $NoId,
 								'Date_Time' => $posisi_tanggal,
-								'Value' 	=> $value
+								'Value' 	=> $value,
+								"type"		=> $type // 18.00 - 22.00 wbp // lwbp 
 							);
 
 							$data[] = $data_row;
