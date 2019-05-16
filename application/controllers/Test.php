@@ -8,7 +8,7 @@
         function index() {
             echo "test ";
 
-            $jam = date('H', strtotime("2018-10-09 17:55:00")); // lwbp
+            $jam = date('G', strtotime("2018-10-09 09:55:00 PM")); // lwbp
             echo $jam;
             $type = "lwbp";
             if( 17 < $jam && $jam < 22 ) { 
