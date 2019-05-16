@@ -55,7 +55,7 @@
 			<div class="row">
 				<!--Left Sidebar-->
 				<div class="col-md-3 md-margin-bottom-40">
-					<img class="img-responsive profile-img margin-bottom-20" src="<?php echo base_url()?>assets/img/team/img32-md.jpg" alt="">
+					<img class="img-responsive profile-img margin-bottom-20" src="<?php echo base_url()?>" alt="">
 
 					<?php $this->load->view('sidebar')?>
 
@@ -205,9 +205,34 @@
 										<input type="text" name="finish" id="finish" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Akhir">
 									</label>
 								</section>
+								<label class="label col"><b> Jumlah Pemakaian KWH LWBP / Luar Waktu Beban Puncak : </b></label>
 							</div>
 
 							<div class="row">
+
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="max_kwh" id="max_kwh" placeholder="Value Tanggal Akhir">
+									</label>
+								</section>
+								<label class="label col">-</label>
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="min_kwh" id="min_kwh" placeholder="Value Tanggal Awal">
+									</label>
+								</section>
+								<label class="label col">=</label>
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="jumlah_kwh" id="jumlah_kwh" placeholder="Jumlah">
+									</label>
+								</section>
+								<label class="label col">Kwh</label>
+								<label class="label col"><b> Jumlah Pemakaian KWH WBP / Waktu Beban Puncak : </b></label>
+								</div>
+
+								<div class="row">
+
 								<section class="col col-3">
 									<label class="input">
 										<input type="text" name="max_kwh" id="max_kwh" placeholder="Value Tanggal Akhir">
@@ -227,11 +252,44 @@
 								</section>
 								<label class="label col">Kwh</label>
 								</div>
+
 								<hr />
 								<div class="row">
 								<label class="label col"><b>Perhitungan Biaya Pemakaian : </b> <i>(Faktur Meter x Jumlah Pemakaian Kwh x Tarif LWB)</i></label>
 								</div>
 
+								<div class="row">
+								<label class="label col"><b>Jumlah Pemakaian LWBP / Luar Waktu Beban Puncak :</i></label>
+								</div>
+								<div class="row">
+
+								<label class="label col">1</label>
+								<label class="label col">X</label>
+								<section class="col col-2">
+									<label class="input">
+										<input type="text" name="jumlah_kwh2" id="jumlah_kwh2" placeholder="Jumlah Kwh">
+									</label>
+								</section>
+								<label class="label col">X</label>
+								<section class="col col-2">
+									<label class="input">
+										<input type="text" name="tarif_lwb3" id="tarif_lwb3" placeholder="Tarif LWB">
+									</label>
+								</section>
+
+								<label class="label col">=</label>
+								<label class="label col">Rp.</label>
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="jumlah_biaya" id="jumlah_biaya" placeholder="Jumlah">
+									</label>
+								</section>
+								</div>
+
+								<div class="row">
+								<label class="label col"><b>Jumlah Pemakaian WBP / Waktu Beban Puncak :</i></label>
+								</div>
+								
 								<div class="row">
 								<label class="label col">1</label>
 								<label class="label col">X</label>
@@ -246,6 +304,7 @@
 										<input type="text" name="tarif_lwb3" id="tarif_lwb3" placeholder="Tarif LWB">
 									</label>
 								</section>
+
 								<label class="label col">=</label>
 								<label class="label col">Rp.</label>
 								<section class="col col-3">
@@ -253,9 +312,10 @@
 										<input type="text" name="jumlah_biaya" id="jumlah_biaya" placeholder="Jumlah">
 									</label>
 								</section>
-								
 								</div>
 								<hr />
+
+
 
 
 								<div class="row">
