@@ -232,7 +232,6 @@
 								</div>
 
 								<div class="row">
-
 								<section class="col col-3">
 									<label class="input">
 										<input type="text" name="max_kwh" id="max_kwh" placeholder="Value Tanggal Akhir">
@@ -313,6 +312,7 @@
 									</label>
 								</section>
 								</div>
+									
 								<hr />
 
 
