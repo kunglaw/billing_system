@@ -371,7 +371,8 @@
 	<script type="text/javascript" src="<?php echo base_url()?>assets/js/plugins/datepicker.js"></script>
 	<script type="text/javascript" src="<?php echo base_url()?>assets/js/plugins/style-switcher.js"></script>
 	<script type="text/javascript" src="<?php echo base_url()?>assets/js/forms/reg.js"></script>
-	<script type="text/javascript">
+    <script type="text/javascript">
+    
 		jQuery(document).ready(function() {
 			App.init();
 			App.initCounter();
@@ -387,7 +388,8 @@
 	            onSelect: function( selectedDate )
 	            {
 	                $('#finish').datepicker('option', 'minDate', selectedDate);
-					getJumlahKwh();
+                    getJumlahKwh();
+                    getJumlahKwhWbp();
 	            }
 	        });
 	        $('#finish').datepicker({
@@ -399,7 +401,8 @@
 	            onSelect: function( selectedDate )
 	            {
 	                $('#start').datepicker('option', 'maxDate', selectedDate);
-					getJumlahKwh();
+                    getJumlahKwh();
+                    getJumlahKwhWbp();
 				}
 	        });
 
@@ -437,7 +440,6 @@
 		
 		function getJumlahKwh()
 		{
-			console.log("as");
 			
 			var start	= $("#start").val();
 			var finish	= $("#finish").val();
@@ -454,18 +456,50 @@
 					{
 						$("#max_kwh").val(response.maximum);
 						$("#min_kwh").val(response.minimum);
-						$("#max_kwh2").val(response.maximum);
-						$("#min_kwh2").val(response.minimum);
+						// $("#max_kwh2").val(response.maximum);
+						// $("#min_kwh2").val(response.minimum);
 						$("#jumlah_kwh").val((response.maximum - response.minimum).toFixed(2));
 						$("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
+						// $("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
+						// $("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
 						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
-						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						// $("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
 					}
 				});
 			}	
-		}
+        }
+        
+        function getJumlahKwhWbp(){
+
+            console.log(" getJumlahKwhWbp run ...")
+
+            var start	= $("#start").val();
+			var finish	= $("#finish").val();
+			var client	= $("#client_id").val();
+			
+			if(start != "" && finish != "" && client != "")
+			{
+				$.ajax({
+					data 	: { tgl_start : start, tgl_finish : finish, client_id : client},
+					type	: "post",
+					url		: "<?php echo base_url()?>billing/get_kwh_wbp",
+					// url2	: "<?php echo base_url()?>billing/get_newkwh",
+					success	: function(response)
+					{
+						// $("#max_kwh").val(response.maximum);
+						// $("#min_kwh").val(response.minimum);
+						$("#max_kwh2").val(response.maximum);
+						$("#min_kwh2").val(response.minimum);
+						// $("#jumlah_kwh").val((response.maximum - response.minimum).toFixed(2));
+						// $("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
+						$("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
+						$("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
+						//$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
+					}
+				});
+			}
+        }
 
 	
 	</script>

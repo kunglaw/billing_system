@@ -18,8 +18,27 @@ class Billing extends CI_Controller {
 		
 		//echo "select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'";
 		
-		
 		$query	= $this->db->query("select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'");
+		
+		if($query->num_rows() > 0)
+		{
+			$query	= $query->row();
+			$data	= array("maximum" => $query->maximum, "minimum" => $query->minimum);
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode($data));
+		}
+	}
+
+	function get_kwh_wbp()
+	{
+		$start	= date("Y-m-d", strtotime($this->input->post("tgl_start")));
+		$finish	= date("Y-m-d", strtotime($this->input->post("tgl_finish")));
+		$client	= $this->input->post("client_id");
+		
+		//echo "select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'";
+		
+		$query	= $this->db->query("select max(Value) as maximum, min(Value) as minimum from tb_riwayat2 where Date_Time between '$start' and '$finish' and No_ID = '$client'");
 		
 		if($query->num_rows() > 0)
 		{
