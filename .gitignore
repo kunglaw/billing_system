@@ -25,6 +25,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
-/tcpdf_6_2_12
-/user_guide
-/application/config/
+/tcpdf_6_2_12/*
+/user_guide/*
+/application/config/*
