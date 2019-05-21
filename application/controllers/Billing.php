@@ -1,475 +1,357 @@
-<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-<!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 13:38:12 GMT -->
-<head>
-	<title>MidTown | Billing System</title>
+class Billing extends CI_Controller {
 
-	<!-- Meta -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
-
-	<!-- Favicon -->
-	<link rel="shortcut icon" href="assets/img/team/favicon.ico">
-
-	<!-- Web Fonts -->
-	<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
-
-	<!-- CSS Global Compulsory -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/style.css">
-
-	<!-- CSS Header and Footer -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/headers/header-default.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/footers/footer-v1.css">
-
-	<!-- CSS Implementing Plugins -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/animate.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/line-icons/line-icons.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/scrollbar/css/jquery.mCustomScrollbar.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
-
-	<!-- CSS Page Style -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/pages/profile.css">
-
-	<!-- CSS Theme -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme-colors/default.css" id="style_color">
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme-skins/dark.css">
-
-	<!-- CSS Customization -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/custom.css">
-</head>
-
-<body>
-	<div class="wrapper">
-		
-
-		<!--=== Profile ===-->
-		<div class="container content profile">
-			<div class="row">
-				<!--Left Sidebar-->
-				<div class="col-md-3 md-margin-bottom-40">
-					<img class="img-responsive profile-img margin-bottom-20" src="<?php echo base_url()?>" alt="">
-
-					<?php $this->load->view('sidebar')?>
-
-					<div class="margin-bottom-50"></div>
-
-					<!--Datepicker-->
-					<form action="#" id="sky-form2" class="sky-form">
-						<div id="inline-start"></div>
-					</form>
-					<!--End Datepicker-->
-				</div>
-				<!--End Left Sidebar-->
-
-				<!-- Profile Content -->
-				<div class="col-md-9">
-					<div class="profile-body">
-
-					
-
-						
-					<div class="headline-center margin-bottom-60">
-					<h2><strong>MidTown - Billing System</strong></h2>
-					<?php if($this->uri->segment(2) == 'filter'){ ?>
-					<strong>Periode <?php echo date('d F Y' ,strtotime($this->input->post('start')));?> - <?php echo date('d F Y' ,strtotime($this->input->post('finish'))); ?></strong>
-					<?php } ?>
-					  </p>
-						
-
-						<form action="<?php echo base_url()?>billing/cetak" target="_blank" method="post" id="sky-form" class="sky-form">
-						<header><p><b>Form Pemakaian KWH</b></p></header>
-
-						<fieldset>
-
-						    <div class="row">
-						    <section>
-								<label for="file" class="input">
-									<input type="text" id="nama_laporan" name="nama_laporan" placeholder="Tuliskan Nama Laporan ">
-								</label>
-							<section>
-								<label class="textarea">
-									<textarea rows="3" name="alamat_tujuan" placeholder="Diajukan Kepada"></textarea>
-								</label>
-							</section>
-
-							<div class="row">
-								<label class="label col"><b>Informasi Data Client : </b> </label>
-								</div> 
-								<div class="row">
-								<section class="col col-5">
-									<label class="select">
-										<select name="ms_kwh" id="ms_kwh" onchange="changeKwh(this.value)">
-											<option value="0" selected disabled>Pilih Nama Client</option>
-											<?php foreach($ms_kwh->result() as $row){ 
-												$kwh = array("lokasi" => $row->Lokasi, "daya" => $row->Daya, "no_id" => $row->No_ID, "nama_client" => $row->Nama_Client);
-												$kwh = json_encode($kwh);
-											?>
-												<option value='<?php echo $kwh?>'><?php echo $row->Nama_Client?></option>
-											<?php } ?>
-										</select>
-										<input id="client_id" name="client_id" type="hidden">
-										<i></i>
-									</label>
-								</section>
-								<section class="col col-4">
-									<label class="input">
-										<input type="text" name="lokasi" id="lokasi" placeholder="Lokasi">
-									</label>
-								</section>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="daya" id="daya" placeholder="Daya">
-									</label>
-								</section>
-								</div>
-
-								<div class="row">
-								<section class="col col-5">
-									<label class="select">
-										<select name="golongan" id="golongan" onchange="changeGolongan(this.value)">
-											<option value="0" selected disabled>Pilih Golongan Tarif</option>
-											<?php foreach($golongan->result() as $row){ 
-											$gol		= array("tarif" => $row->Tarif_KWH, "golongan" => $row->Golongan_Tarif);
-											$gol		= json_encode($gol);
-											?>
-											<option value='<?php echo $gol?>'><?php echo $row->Golongan_Tarif?></option>
-											<?php } ?>
-										</select>
-										<input name="nama_golongan" id="nama_golongan" type="hidden"/>
-										<!--<input type="hidden" name="nama_golongan" id="nama_golongan">-->
-										<i></i>
-									</label>
-								</section>
-								<section class="col col-4">
-									<label class="input">
-										<input type="text" name="tarif_lwb" id="tarif_lwb" placeholder="Tarif LWB">
-									</label>
-								</section>
-								</div>
-								<hr />
-								<div class="row">
-								<label class="label col"><b>Perhitungan Harga Minimum : </b> <i>(Daya x PLN x Tarif LWB)</i></label>
-								</div>
-
-								<div class="row">
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="daya2" id="daya2" placeholder="Daya">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="number" name="tarif_pln" id="tarif_pln"  placeholder="Tarif PLN">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb2" id="tarif_lwb2" placeholder="Tarif LWB">
-									</label>
-								</section>
-								<label class="label col">=</label>
-								<label class="label col">Rp.</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="jumlah_minimum" id="jumlah_minimum" placeholder="Jumlah">
-									</label>
-								</section>
-								<label class="label col">Kva</label>
-								</div>
-								<hr />
-
-								<div class="row">
-								<label class="label col"><b>Perhitungan Pemakaian KWH : </b> <i>(Value Tanggal Akhir - Value Tanggal Awal)</i></label>
-								</div>
-								<div class="row">
-								
-								<section class="col col-6">
-									<label class="input">
-										<i class="icon-append fa fa-calendar"></i>
-										<input type="text" name="start" id="start" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Awal">
-									</label>
-								</section>
-								<section class="col col-6">
-									<label class="input">
-										<i class="icon-append fa fa-calendar"></i>
-										<input type="text" name="finish" id="finish" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Akhir">
-									</label>
-								</section>
-								<label class="label col"><b> Jumlah Pemakaian KWH LWBP / Luar Waktu Beban Puncak : </b></label>
-							</div>
-
-							<div class="row">
-
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="max_kwh" id="max_kwh" placeholder="Value Tanggal Akhir">
-									</label>
-								</section>
-								
-								<label class="label col">-</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="min_kwh" id="min_kwh" placeholder="Value Tanggal Awal">
-									</label>
-								</section>
-								<label class="label col">=</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="jumlah_kwh" id="jumlah_kwh" placeholder="Jumlah">
-									</label>
-								</section>
-								<label class="label col">Kwh</label>
-								<label class="label col"><b> Jumlah Pemakaian KWH WBP / Waktu Beban Puncak : </b></label>
-								</div>
-
-								<div class="row">
-
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="max_kwh2" id="max_kwh2" placeholder="Value Tanggal Akhir">
-									</label>
-								</section>
-								<label class="label col">-</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="min_kwh2" id="min_kwh2" placeholder="Value Tanggal Awal">
-									</label>
-								</section>
-								<label class="label col">=</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="jumlah_newkwh" id="jumlah_newkwh" placeholder="Jumlah">
-									</label>
-								</section>
-								<label class="label col">Kwh</label>
-								</div>
-
-								<hr />
-								<div class="row">
-								<label class="label col"><b>Perhitungan Biaya Pemakaian : </b> <i>(Faktur Meter x Jumlah Pemakaian Kwh x Tarif LWB)</i></label>
-								</div>
-
-								<div class="row">
-								<label class="label col"><b>Jumlah Pemakaian LWBP / Luar Waktu Beban Puncak :</i></label>
-								</div>
-								<div class="row">
-
-								<label class="label col">1</label>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="jumlah_kwh2" id="jumlah_kwh2" placeholder="Jumlah Kwh">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb3" id="tarif_lwb3" placeholder="Tarif LWB">
-									</label>
-								</section>
-
-								<label class="label col">=</label>
-								<label class="label col">Rp.</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="jumlah_biaya" id="jumlah_biaya" placeholder="Jumlah">
-									</label>
-								</section>
-								</div>
-
-								<div class="row">
-								<label class="label col"><b>Jumlah Pemakaian WBP / Waktu Beban Puncak :</i></label>
-								</div>
-								
-								<div class="row">
-								<label class="label col">1</label>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="jumlah_newkwh2" id="jumlah_newkwh2" placeholder="Jumlah Kwh">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb4" id="tarif_lwb4" placeholder="Tarif LWB">
-									</label>
-								</section>
-
-								<label class="label col">=</label>
-								<label class="label col">Rp.</label>
-								<section class="col col-3">
-									<label class="input">
-										<input type="text" name="jumlah_biaya2" id="jumlah_biaya2" placeholder="Jumlah">
-									</label>
-								</section>
-								</div>
-								<hr />
-
-								<div class="row">
-								<label class="label col"><b>Mengetahui / Penanggung Jawab : </i></label>
-								</div>
-								<div class="row">
-								<section class="col col-6">
-									<label class="input">
-										<input type="text" name="kordinator" id="kordinator" placeholder="Nama Koordinator">
-									</label>
-								</section>
-
-								<section class="col col-6">
-									<label class="input">
-										<input type="text" name="manager" id="manager" placeholder="Nama Manager">
-									</label>
-								</section>
-								</div>
-								<footer>
-								<button type="submit" class="btn-u">
-								Save & Print</button>
-								<div class="progress"></div>
-								</footer>
-								
-						</fieldset>
-						</form>
-
-				</div>
-				<!-- End Profile Content -->
-			</div>
-		</div><!--/container-->
-		<!--=== End Profile ===-->
-
-		
-	</div><!--/wrapper-->
-
+	/**
+	 * Index Page for this controller.
+	 *
+	 * Maps to the following URL
+	 * 		http://example.com/index.php/welcome
+	 *	- or -
+	 * 		http://example.com/index.php/welcome/index
+	 *	- or -
+	 * Since this controller is set as the default controller in
+	 * config/routes.php, it's displayed at http://example.com/
+	 *
+	 * So any other public methods not prefixed with an underscore will
+	 * map to /index.php/welcome/<method_name>
+	 * @see https://codeigniter.com/user_guide/general/urls.html
+	 */
+	public function index()
+	{
+		$data['ms_kwh']		= $this->db->query("select * from ms_kwh");
+		$data['golongan']	= $this->db->query("select * from golongan");
+		$this->load->view('billing',$data);
+	}
 	
-
-	<!-- JS Global Compulsory -->
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/jquery/jquery-migrate.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<!-- JS Implementing Plugins -->
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/back-to-top.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/smoothScroll.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/counter/waypoints.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/counter/jquery.counterup.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/sky-forms-pro/skyforms/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js"></script>
-
-	<!-- JS Customization -->
-	<script type="text/javascript" src="<?php echo base_url()?>assets/js/custom.js"></script>
-	<!-- JS Page Level -->
-	<script type="text/javascript" src="<?php echo base_url()?>assets/js/app.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/js/plugins/datepicker.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/js/plugins/style-switcher.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>assets/js/forms/reg.js"></script>
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			App.init();
-			App.initCounter();
-			StyleSwitcher.initStyleSwitcher();
-			
-
-			$('#start').datepicker({
-	            dateFormat: 'dd-mm-yy',
-	            changeMonth: true,
-	            changeYear: true,
-	            prevText: '<i class="icon-chevron-left"></i>',
-	            nextText: '<i class="icon-chevron-right"></i>',
-	            onSelect: function( selectedDate )
-	            {
-	                $('#finish').datepicker('option', 'minDate', selectedDate);
-					getJumlahKwh();
-	            }
-	        });
-	        $('#finish').datepicker({
-	            dateFormat: 'dd-mm-yy',
-	            changeMonth: true,
-	            changeYear: true,
-	            prevText: '<i class="icon-chevron-left"></i>',
-	            nextText: '<i class="icon-chevron-right"></i>',
-	            onSelect: function( selectedDate )
-	            {
-	                $('#start').datepicker('option', 'maxDate', selectedDate);
-					getJumlahKwh();
-				}
-	        });
-
-			$('#tarif_pln').on('input', function() {
-				// do something
-				var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-				$("#jumlah_minimum").val(total);
-			});
-			
-		});
-
-		function changeKwh(value)
-		{
-			var kwh	= $.parseJSON(value);
-			$("#lokasi").val(kwh.lokasi);
-			$("#daya").val(kwh.daya);
-			$("#client_id").val(kwh.no_id);
-			$("#daya2").val(kwh.daya);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
-			//alert(kwh.lokasi);
-		}
+	function get_kwh()
+	{
+		$start	= date("Y-m-d", strtotime($this->input->post("tgl_start")));
+		$finish	= date("Y-m-d", strtotime($this->input->post("tgl_finish")));
+		$client	= $this->input->post("client_id");
 		
-		function changeGolongan(value)
-		{
-			var gol	= $.parseJSON(value);
-			$("#tarif_lwb").val(gol.tarif);
-			$("#tarif_lwb2").val(gol.tarif);
-			$("#tarif_lwb3").val(gol.tarif);
-			$("#tarif_lwb4").val(gol.tarif);
-			$("#nama_golongan").val(gol.golongan);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
-		}
+		//echo "select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'";
 		
-		function getJumlahKwh()
+		
+		$query	= $this->db->query("select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'");
+		
+		if($query->num_rows() > 0)
 		{
-			console.log("as");
-			
-			var start	= $("#start").val();
-			var finish	= $("#finish").val();
-			var client	= $("#client_id").val();
-			
-			if(start != "" && finish != "" && client != "")
-			{
-				$.ajax({
-					data 	: { tgl_start : start, tgl_finish : finish, client_id : client},
-					type	: "post",
-					url		: "<?php echo base_url()?>billing/get_kwh",
-					url2	: "<?php echo base_url()?>billing/get_newkwh",
-					success	: function(response)
-					{
-						$("#max_kwh").val(response.maximum);
-						$("#min_kwh").val(response.minimum);
-						$("#max_kwh2").val(response.maximum);
-						$("#min_kwh2").val(response.minimum);
-						$("#jumlah_kwh").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
-						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
-					}
-				});
-			}	
+			$query	= $query->row();
+			$data	= array("maximum" => $query->maximum, "minimum" => $query->minimum);
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode($data));
+		}
+	}
+
+	public function filter()
+	{
+		$data['start']		= date('Y-m-d' ,strtotime($this->input->post('start')));
+		$data['finish']		= date('Y-m-d' ,strtotime($this->input->post('finish')));
+
+		$data['filter']		= "yes";
+
+		
+		$this->load->view('billing', $data);
+	}
+
+	function cetak()
+	{
+		$nama_laporan	= $this->input->post("nama_laporan");
+		$golongan		= json_decode($this->input->post("golongan"), true);
+		$alamat			= $this->input->post("alamat_tujuan");
+		$ms_kwh			= json_decode($this->input->post("ms_kwh"), true);
+		//print_r($ms_kwh);
+		//exit();
+		$tarif_lwb		= $this->input->post("tarif_lwb");
+		$tarif_pln		= $this->input->post("tarif_pln");
+		
+		$tgl_start		= date("d/m/Y", strtotime($this->input->post('start')));
+		$tgl_finish		= date("d/m/Y", strtotime($this->input->post('finish')));
+		$max_kwh		= $this->input->post("max_kwh");
+		$min_kwh		= $this->input->post("min_kwh");
+		$total_kwh		= $max_kwh - $min_kwh;
+		$jumlah_biaya	= $this->input->post("jumlah_biaya");
+
+		$alamat_tujuan	= $this->input->post("alamat_tujuan");
+		$kordinator		= $this->input->post("kordinator");
+		$manager		= $this->input->post("manager");
+		
+		$query_pph		= $this->db->query("select * from pph limit 1");
+		if($query_pph->num_rows() > 0)
+		{
+			$pph	= $query_pph->row()->PPH;
+		}	
+		else
+		{
+			$pph	= 0;
+		}	
+		
+		// Buat disini itungannya, gue nggak tau rumusnya. variable nya kan udah ada diatas. yang lebih gede itu yang jadi biaya ditagihkan
+		$harga_minimum		= $ms_kwh['daya'] * $tarif_pln * $tarif_lwb;
+		$harga_pemakaian    = $total_kwh * $tarif_lwb; 
+		//
+		
+		if($harga_pemakaian > $harga_minimum)
+		{
+			$biaya_ditagihkan		= $harga_pemakaian;
+		}	
+		else
+		{
+			$biaya_ditagihkan		= $harga_minimum;
 		}
 
-	
-	</script>
-	
+		$subtotal = ($biaya_ditagihkan - $pph);
+		$ppn = $subtotal * 0.1;
+		$grandTotal = ($subtotal + $ppn);
+		
+		$this->load->library('Pdf');
 
-</body>
-</html>
+		$pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+		// set document information
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Jaga Citra Inti'); // ini ganti, ji satu lagi pleasee itu gimana cara ngeluarin biaya ditagihkan ? Harga minimum dibanding pemakaian kwh
+		$pdf->SetTitle('Menara Palma 2'); // ini ganti,ji yang golongan masih salah keluarnya harusnya Tarif - 1 bukan angkanya, EGOIS		itung sendiri lah ya
+		$pdf->SetSubject('Laporan');
+		$pdf->SetKeywords('TCPDF, PDF');
+
+		// remove default header/footer
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
+
+		// set default monospaced font
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+		// set margins
+		$pdf->SetMargins(30, 0, 20);
+
+		// set auto page breaks
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		
+		// set image scale factor
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		// set some language-dependent strings (optional)
+		if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+			require_once(dirname(__FILE__).'/lang/eng.php');
+			$pdf->setLanguageArray($l);
+		}
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+		// add a page
+		$pdf->AddPage('P','A4');
+		//$pdf->Image('assets/img/team/logoXl.png',27,10,-2500);
+		// set font
+		$pdf->SetFont('helvetica','',11);
+		
+
+
+		$html = '
+		<font face="times">
+		';
+
+		$html .= '
+		<br/> <br/>
+		<table>
+				<tr>
+					<th rowspan="4" width="20%"></th>
+					<th width="53%">MidTown  </th>
+					<th rowspan="4" width="27%" align="center" border="1">INFORMASI TAGIHAN REKENING LISTRIK</th>
+				</tr>
+				<tr>
+					<th width="53%">Jalan H.R. Rasuna Said No.Kav 6, Kuningan Timur, Kec.Setia Budi, Jakarta Selatan, 12950.</th>
+				</tr>
+				<tr>
+					<th width="53%">Telp.</th>
+				</tr>
+			
+
+			</table>
+			<br/> <br/>
+			<hr />
+		
+		<h3 align="center"> '.$nama_laporan.'</h3>
+
+		'; 
+
+
+		$html .= '<br><br>
+
+
+			<table border="0">
+				<tr>
+					<th rowspan="6" width="45%">'.$alamat_tujuan.'</th>
+					<th width="25%">Nama Pelanggan  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$ms_kwh['nama_client'].'</td>
+				</tr>
+				<tr>
+					<th width="25%">Lokasi  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$ms_kwh['lokasi'].'</td>
+				</tr>
+				<tr>
+					<th width="25%">Tarif LWBP/Kwh  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$tarif_lwb.'</td>
+				</tr>
+				<tr>
+					<th width="25%">Faktur Meter  </th>
+					<td width="5%" align="center">:</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th width="25%">Golongan Tarif  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$golongan['golongan'].'</td>
+				</tr>
+				<tr>
+					<th width="25%">Daya  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$ms_kwh['daya'].'</td>
+				</tr>
+
+
+			</table>
+			<br/> <br/>
+			
+			<table border="1">
+				<tr>
+					<th align="center"><strong>Catatan Meter</strong></th>
+					<th align="center"><strong>Tanggal</strong></th>
+					<th align="center"><strong>Pembacaan</strong></th>
+				</tr>
+				<tr>
+					<td align="center">Stand Meter Awal</td>
+					<td align="center">'.$tgl_start.'</td>
+					<td align="center">'.$min_kwh.'</td>
+				</tr>
+				<tr>
+					<td align="center">Stand Meter Akhir</td>
+					<td align="center">'.$tgl_finish.'</td>
+					<td align="center">'.$max_kwh.'</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><strong>Pemakaian KWH</strong></td>
+					<td align="center"><strong>'.$total_kwh.'</strong></td>
+				</tr>
+			</table>
+			<br/> <br/>
+			<table>
+				<tr>
+					<td colspan="7"><i>1. Rekening Minimum : (Daya x PLN x Tarif LWB)</i></td>
+				</tr>
+				<tr>
+					<td align="center">'.$ms_kwh['daya'].'</td>
+					<td width="5%">X</td>
+					<td align="center">'.$tarif_pln.'</td>
+					<td width="5%">X</td>
+					<td align="center">'.$tarif_lwb.'</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td width="14.3%" align="right">'.number_format($harga_minimum,0,",",".").',00</td>
+				</tr>
+			</table>
+			<br/> <br/>
+			<table>
+				<tr>
+					<td colspan="7"><i>2. Biaya Pemakaian : (Faktur Meter x Jumlah Pemakaian Kwh x Tarif LWB)</i></td>
+				</tr>
+				<tr>
+					<td align="center">1</td>
+					<td width="5%">X</td>
+					<td align="center">'.$total_kwh.'</td>
+					<td width="5%">X</td>
+					<td align="center">'.$tarif_lwb.'</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td width="14.3%" align="right">'.number_format($harga_pemakaian,0,",",".").',00 </td>
+				</tr>
+			</table>
+			<br/> <br/>
+			<table>
+				<tr>
+					<td colspan="7"><i>3. Jumlah Biaya yang harus dibayarkan :</i></td>
+				</tr>
+				<br/>
+				<tr>
+					<td width="52.9%">a. Biaya Ditagihkan</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td align="right">'.number_format($biaya_ditagihkan,0,",",".").',00</td>
+				</tr>
+				<br/>
+				<tr>
+					<td width="52.9%">b. PPH Pasal 4, Ayat 2</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td align="right">'.number_format($pph,0,",",".").',00</td>
+				</tr>
+				<br/>
+				<tr>
+					<td width="26.9%"></td>
+					<td width="26%">Sub Total</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td align="right">'.number_format($subtotal,0,",",".").',00</td>
+				</tr>
+				<br/>
+				<tr>
+					<td width="26.9%"></td>
+					<td width="26%">PPN 10%</td>
+					<td width="5%">=</td>
+					<td width="5%">Rp.</td>
+					<td align="right">'.number_format($ppn,0,",",".").',00</td>
+				</tr>
+			</table>
+			<hr/>
+			<table>
+				<br/> <br/>
+				<tr>
+					<td width="26.9%"></td>
+					<td width="26%"><strong>Grand Total</strong></td>
+					<td width="5%"><strong>=</strong></td>
+					<td width="5%"><strong>Rp.</strong></td>
+					<td width="14.3%" align="right"><strong>'.number_format($grandTotal,0,",",".").',00</strong></td>
+				</tr>
+			</table>
+			<br/> <br/> <br/> <br/> 
+
+			<table border="0">
+				<tr>
+					<td align="center">Dibuat Oleh,</td>
+					<td align="center">Disetujui Oleh,</td>
+				</tr>
+				<tr>
+					<td align="center">Engineer Coordinator</td>
+					<td align="center">Manager</td>
+				</tr>
+			</table>
+			<br/> <br/> <br/>  <br/> <br/> 
+			<table border="0">
+				<tr>
+					<td align="center">'.$kordinator.'</td>
+					<td align="center">'.$manager.'</td>
+				</tr>
+			</table>
+			
+		';	
+
+		$pdf->writeHTML($html, true, false, true, false, '');
+
+		//$pdf->SetAutoPageBreak(false, 0);
+		
+		//$pdf->Image($img_file, 0, 0, 300, 220);
+		
+		// output the HTML content
+		
+
+		// -----------------------------------------------------------------------------
+
+		//Close and output PDF document
+		$pdf->Output('laporan.pdf', 'I');
+	}
+}
