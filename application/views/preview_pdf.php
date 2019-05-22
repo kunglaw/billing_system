@@ -264,7 +264,7 @@
 								</div>
 								<div class="row">
 
-								<label class="label col"><?php $faktur ?></label>
+								<label class="label col">1</label>
 								<label class="label col">X</label>
 								<section class="col col-2">
 									<label class="input">

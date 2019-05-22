@@ -5,7 +5,7 @@
 
 <!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 13:38:12 GMT -->
 <head>
-	<title>Menara Palma 2 | Billing System</title>
+	<title>MidTown | Billing System</title>
 
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -322,11 +322,7 @@
 		});
 	</script>
 	
-	<!--[if lt IE 9]>
-	<script src="assets/plugins/respond.js"></script>
-	<script src="assets/plugins/html5shiv.js"></script>
-	<script src="assets/plugins/placeholder-IE-fixes.js"></script>
-	<![endif]-->
+
 </body>
 
 <!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 13:40:32 GMT -->
