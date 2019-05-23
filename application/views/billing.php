@@ -48,7 +48,15 @@
 
 <body>
 	<div class="wrapper">
-		
+		<?php
+		$query_faktur 	= $this->db->query("select * from faktur_meter");
+		$faktur 		= $query_faktur->row()->Value;
+
+		$tarif_luar		= $this->db->query("select * from golongan where ID_Golongan = 1");
+		$tarif_lwbp		= $tarif_luar->row()->Tarif_KWH;
+		$tarif_puncak	= $this->db->query("select * from golongan where ID_Golongan = 2");
+		$tarif_wbp		= $tarif_puncak->row()->Tarif_KWH;
+		?>
 
 		<!--=== Profile ===-->
 		<div class="container content profile">
@@ -155,39 +163,7 @@
 								</section>
 								</div>
 								<hr />
-								<div class="row">
-								<label class="label col"><b>Perhitungan Harga Minimum : </b> <i>(Daya x PLN x Tarif LWB)</i></label>
-								</div>
-
-								<div class="row">
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="daya2" id="daya2" placeholder="Daya">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="number" name="tarif_pln" id="tarif_pln"  placeholder="Tarif PLN">
-									</label>
-								</section>
-								<label class="label col">X</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb2" id="tarif_lwb2" placeholder="Tarif LWB">
-									</label>
-								</section>
-								<label class="label col">=</label>
-								<label class="label col">Rp.</label>
-								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="jumlah_minimum" id="jumlah_minimum" placeholder="Jumlah">
-									</label>
-								</section>
-								<label class="label col">Kva</label>
-								</div>
-								<hr />
-
+								
 								<div class="row">
 								<label class="label col"><b>Perhitungan Pemakaian KWH : </b> <i>(Value Tanggal Akhir - Value Tanggal Awal)</i></label>
 								</div>
@@ -264,7 +240,7 @@
 								</div>
 								<div class="row">
 
-								<label class="label col"><?php $faktur ?></label>
+								<label class="label col"><?php echo $faktur; ?></label>
 								<label class="label col">X</label>
 								<section class="col col-2">
 									<label class="input">
@@ -273,8 +249,8 @@
 								</section>
 								<label class="label col">X</label>
 								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb3" id="tarif_lwb3" placeholder="Tarif LWB">
+								<label class="label col">
+										<?php echo $tarif_lwbp; ?>
 									</label>
 								</section>
 
@@ -292,7 +268,7 @@
 								</div>
 								
 								<div class="row">
-								<label class="label col">1</label>
+								<label class="label col"><?php echo $faktur; ?></label>
 								<label class="label col">X</label>
 								<section class="col col-2">
 									<label class="input">
@@ -301,8 +277,8 @@
 								</section>
 								<label class="label col">X</label>
 								<section class="col col-2">
-									<label class="input">
-										<input type="text" name="tarif_lwb4" id="tarif_lwb4" placeholder="Tarif LWB">
+									<label class="label col">
+										<?php echo $tarif_lwbp; ?>
 									</label>
 								</section>
 
