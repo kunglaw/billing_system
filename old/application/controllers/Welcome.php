@@ -20,18 +20,7 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$data		= $this->db->query("select * from bturiwayat");
-
-		foreach($data->result() as $row)
-		{
-			$str = $row->Date_Time;
-
-			$text = (explode(" ",$str));
-
-			$waktu = $text[0];
-
-			$this->db->query("update bturiwayat set Date_Time = '$waktu' where id = '$row->id'");
-		}
+		echo "<a href='".base_url("billing")."'> /billing </a>";
 	}
 
 	function convert()

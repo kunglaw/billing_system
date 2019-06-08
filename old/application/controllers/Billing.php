@@ -3,25 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Billing extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
 	public function index()
 	{
 		$data['ms_kwh']		= $this->db->query("select * from ms_kwh");
 		$data['golongan']	= $this->db->query("select * from golongan");
+		$query_faktur 	= $this->db->query("select * from faktur_meter");
+		$faktur 		= $query_faktur->row()->Value;
 		$this->load->view('billing',$data);
 	}
 	
@@ -33,8 +20,27 @@ class Billing extends CI_Controller {
 		
 		//echo "select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'";
 		
-		
 		$query	= $this->db->query("select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'");
+		
+		if($query->num_rows() > 0)
+		{
+			$query	= $query->row();
+			$data	= array("maximum" => $query->maximum, "minimum" => $query->minimum);
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode($data));
+		}
+	}
+
+	function get_kwh_wbp()
+	{
+		$start	= date("Y-m-d", strtotime($this->input->post("tgl_start")));
+		$finish	= date("Y-m-d", strtotime($this->input->post("tgl_finish")));
+		$client	= $this->input->post("client_id");
+		
+		//echo "select max(Value) as maximum, min(Value) as minimum from tb_riwayat where Date_Time between '$start' and '$finish' and No_ID = '$client'";
+		
+		$query	= $this->db->query("select max(Value) as maximum, min(Value) as minimum from tb_riwayat2 where Date_Time between '$start' and '$finish' and No_ID = '$client'");
 		
 		if($query->num_rows() > 0)
 		{
@@ -67,18 +73,29 @@ class Billing extends CI_Controller {
 		//exit();
 		$tarif_lwb		= $this->input->post("tarif_lwb");
 		$tarif_pln		= $this->input->post("tarif_pln");
-		
+
+		$tarif_luar		= $this->db->query("select * from golongan where ID_Golongan = 1");
+		$tarif_lwbp		= $tarif_luar->row()->Tarif_KWH;
+		$tarif_puncak	= $this->db->query("select * from golongan where ID_Golongan = 2");
+		$tarif_wbp		= $tarif_puncak->row()->Tarif_KWH;
+
 		$tgl_start		= date("d/m/Y", strtotime($this->input->post('start')));
 		$tgl_finish		= date("d/m/Y", strtotime($this->input->post('finish')));
 		$max_kwh		= $this->input->post("max_kwh");
 		$min_kwh		= $this->input->post("min_kwh");
-		$total_kwh		= $max_kwh - $min_kwh;
+		$max_kwh2		= $this->input->post("max_kwh2");
+		$min_kwh2		= $this->input->post("min_kwh2");
+		$subtotal_kwh	= $max_kwh - $min_kwh * $faktur;
+		$subtotal_kwh2	= $max_kwh2 - $min_kwh2 * $faktur;
+		$total_kwh		= $subtotal_kwh + $subtotal_kwh2;
 		$jumlah_biaya	= $this->input->post("jumlah_biaya");
 
 		$alamat_tujuan	= $this->input->post("alamat_tujuan");
 		$kordinator		= $this->input->post("kordinator");
 		$manager		= $this->input->post("manager");
-		
+		$query_faktur 	= $this->db->query("select * from faktur_meter");
+		$faktur 		= $query_faktur->row()->Value;
+
 		$query_pph		= $this->db->query("select * from pph limit 1");
 		if($query_pph->num_rows() > 0)
 		{
@@ -143,7 +160,7 @@ class Billing extends CI_Controller {
 
 		// add a page
 		$pdf->AddPage('P','A4');
-		//$pdf->Image('assets/img/team/logoXl.png',27,10,-2500);
+		$pdf->Image('assets/img/team/midtown.png',27,10,-2500);
 		// set font
 		$pdf->SetFont('helvetica','',11);
 		
@@ -159,10 +176,10 @@ class Billing extends CI_Controller {
 				<tr>
 					<th rowspan="4" width="20%"></th>
 					<th width="53%">MidTown  </th>
-					<th rowspan="4" width="27%" align="center" border="1">INFORMASI TAGIHAN REKENING LISTRIK</th>
+					<th rowspan="4" width="27%" align="center" border="1"><br/>INFORMASI TAGIHAN REKENING LISTRIK</th>
 				</tr>
 				<tr>
-					<th width="53%">Jalan H.R. Rasuna Said No.Kav 6, Kuningan Timur, Kec.Setia Budi, Jakarta Selatan, 12950.</th>
+					<th width="53%">Jl. Fachrudin No.26, RT.9/RW.5, Kp. Bali, Kec. Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10250</th>
 				</tr>
 				<tr>
 					<th width="53%">Telp.</th>
@@ -196,12 +213,17 @@ class Billing extends CI_Controller {
 				<tr>
 					<th width="25%">Tarif LWBP/Kwh  </th>
 					<td width="5%" align="center">:</td>
-					<td>'.$tarif_lwb.'</td>
+					<td>'.$tarif_lwbp.'</td>
+				</tr>
+				<tr>
+					<th width="25%">Tarif LWBP/Kwh  </th>
+					<td width="5%" align="center">:</td>
+					<td>'.$tarif_wbp.'</td>
 				</tr>
 				<tr>
 					<th width="25%">Faktur Meter  </th>
 					<td width="5%" align="center">:</td>
-					<td>1</td>
+					<td>'.$faktur.'</td>
 				</tr>
 				<tr>
 					<th width="25%">Golongan Tarif  </th>
@@ -222,22 +244,31 @@ class Billing extends CI_Controller {
 				<tr>
 					<th align="center"><strong>Catatan Meter</strong></th>
 					<th align="center"><strong>Tanggal</strong></th>
-					<th align="center"><strong>Pembacaan</strong></th>
-				</tr>
-				<tr>
-					<td align="center">Stand Meter Awal</td>
-					<td align="center">'.$tgl_start.'</td>
-					<td align="center">'.$min_kwh.'</td>
+					<th align="center"><strong>LWBP</strong></th>
+					<th align="center"><strong>WBP</strong></th>
 				</tr>
 				<tr>
 					<td align="center">Stand Meter Akhir</td>
 					<td align="center">'.$tgl_finish.'</td>
 					<td align="center">'.$max_kwh.'</td>
+					<td align="center">'.$max_kwh2.'</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><strong>Pemakaian KWH</strong></td>
-					<td align="center"><strong>'.$total_kwh.'</strong></td>
+					<td align="center">Stand Meter Awal</td>
+					<td align="center">'.$tgl_start.'</td>
+					<td align="center">'.$min_kwh.'</td>
+					<td align="center">'.$min_kwh2.'</td>
 				</tr>
+				<tr>
+					<td colspan="2" align="center"><strong>ST Akhir - ST Awal</strong></td>
+					<td align="center"><strong>'.$subtotal_kwh.'</strong></td>
+					<td align="center"><strong>'.$subtotal_kwh2.'</strong></td>
+				</tr>
+				<tr>
+				<td colspan="2" align="center"><strong>Total Pemakaian Kwh</strong></td>
+				<td colspan="2" align="center"><strong>'.$total_kwh.'</strong></td>
+			
+			</tr>
 			</table>
 			<br/> <br/>
 			<table>
@@ -258,7 +289,7 @@ class Billing extends CI_Controller {
 			<br/> <br/>
 			<table>
 				<tr>
-					<td colspan="7"><i>2. Biaya Pemakaian : (Faktur Meter x Jumlah Pemakaian Kwh x Tarif LWB)</i></td>
+					<td colspan="7"><i>2. Biaya Pemakaian : (Faktur Meter x Total Pemakaian Kwh x Tarif LWB)</i></td>
 				</tr>
 				<tr>
 					<td align="center">1</td>
