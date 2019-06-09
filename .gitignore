@@ -28,3 +28,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tcpdf_6_2_12/*
 /user_guide/*
 application/config/config.php
+
+old/.env
+old/.env.development
