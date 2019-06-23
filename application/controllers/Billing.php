@@ -73,6 +73,8 @@ class Billing extends CI_Controller {
 		//exit();
 		$tarif_lwb		= $this->input->post("tarif_lwb");
 		$tarif_pln		= $this->input->post("tarif_pln");
+		$query_faktur 	= $this->db->query("select * from faktur_meter");
+		$faktur 		= $query_faktur->row()->Value;
 
 		$tarif_luar		= $this->db->query("select * from golongan where ID_Golongan = 1");
 		$tarif_lwbp		= $tarif_luar->row()->Tarif_KWH;
@@ -85,16 +87,15 @@ class Billing extends CI_Controller {
 		$min_kwh		= $this->input->post("min_kwh");
 		$max_kwh2		= $this->input->post("max_kwh2");
 		$min_kwh2		= $this->input->post("min_kwh2");
-		$subtotal_kwh	= $max_kwh - $min_kwh * $faktur;
-		$subtotal_kwh2	= $max_kwh2 - $min_kwh2 * $faktur;
+		$subtotal_kwh	= ($max_kwh - $min_kwh) * $faktur;
+		$subtotal_kwh2	= ($max_kwh2 - $min_kwh2) * $faktur;
+
 		$total_kwh		= $subtotal_kwh + $subtotal_kwh2;
 		$jumlah_biaya	= $this->input->post("jumlah_biaya");
 
 		$alamat_tujuan	= $this->input->post("alamat_tujuan");
 		$kordinator		= $this->input->post("kordinator");
 		$manager		= $this->input->post("manager");
-		$query_faktur 	= $this->db->query("select * from faktur_meter");
-		$faktur 		= $query_faktur->row()->Value;
 
 		$query_pph		= $this->db->query("select * from pph limit 1");
 		if($query_pph->num_rows() > 0)
@@ -107,22 +108,16 @@ class Billing extends CI_Controller {
 		}	
 		
 		// Buat disini itungannya, gue nggak tau rumusnya. variable nya kan udah ada diatas. yang lebih gede itu yang jadi biaya ditagihkan
-		$harga_minimum		= $ms_kwh['daya'] * $tarif_pln * $tarif_lwb;
-		$harga_pemakaian    = $total_kwh * $tarif_lwb; 
-		//
-		
-		if($harga_pemakaian > $harga_minimum)
-		{
-			$biaya_ditagihkan		= $harga_pemakaian;
-		}	
-		else
-		{
-			$biaya_ditagihkan		= $harga_minimum;
-		}
+		// $harga_minimum		= $ms_kwh['daya'] * $tarif_pln * $tarif_lwb;
 
-		$subtotal = ($biaya_ditagihkan - $pph);
-		$ppn = $subtotal * 0.1;
-		$grandTotal = ($subtotal + $ppn);
+		$harga_pemakaian_lwbp    = $subtotal_kwh * $tarif_lwbp; 
+		$harga_pemakaian_wbp    = $subtotal_kwh2 * $tarif_wbp;
+		$biaya_ditagihkan = $harga_pemakaian_lwbp + $harga_pemakaian_wbp;
+
+
+		$total_biaya = $biaya_ditagihkan - $pph;
+		$ppn = $total_biaya * 0.1;
+		$grandTotal = $total_biaya + $ppn;
 		
 		$this->load->library('Pdf');
 
@@ -201,7 +196,7 @@ class Billing extends CI_Controller {
 			<table border="0">
 				<tr>
 					<th rowspan="6" width="45%">'.$alamat_tujuan.'</th>
-					<th width="25%">Nama Pelanggan  </th>
+					<th width="25%">ID Pelanggan  </th>
 					<td width="5%" align="center">:</td>
 					<td>'.$ms_kwh['nama_client'].'</td>
 				</tr>
@@ -213,22 +208,17 @@ class Billing extends CI_Controller {
 				<tr>
 					<th width="25%">Tarif LWBP/Kwh  </th>
 					<td width="5%" align="center">:</td>
-					<td>'.$tarif_lwbp.'</td>
+					<td>'.number_format($tarif_lwbp,0,",",".").'</td>
 				</tr>
 				<tr>
 					<th width="25%">Tarif LWBP/Kwh  </th>
 					<td width="5%" align="center">:</td>
-					<td>'.$tarif_wbp.'</td>
+					<td>'.number_format($tarif_wbp,0,",",".").'</td>
 				</tr>
 				<tr>
 					<th width="25%">Faktur Meter  </th>
 					<td width="5%" align="center">:</td>
-					<td>'.$faktur.'</td>
-				</tr>
-				<tr>
-					<th width="25%">Golongan Tarif  </th>
-					<td width="5%" align="center">:</td>
-					<td>'.$golongan['golongan'].'</td>
+					<td>'.number_format($faktur,0,",",".").'</td>
 				</tr>
 				<tr>
 					<th width="25%">Daya  </th>
@@ -260,48 +250,46 @@ class Billing extends CI_Controller {
 					<td align="center">'.$min_kwh2.'</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><strong>ST Akhir - ST Awal</strong></td>
-					<td align="center"><strong>'.$subtotal_kwh.'</strong></td>
-					<td align="center"><strong>'.$subtotal_kwh2.'</strong></td>
+					<td colspan="2" align="center"><strong>ST Akhir - ST Awal * Faktur Meter</strong></td>
+					<td align="center"><strong>'.number_format($subtotal_kwh,0,",",".").'</strong></td>
+					<td align="center"><strong>'.number_format($subtotal_kwh2,0,",",".").'</strong></td>
 				</tr>
 				<tr>
 				<td colspan="2" align="center"><strong>Total Pemakaian Kwh</strong></td>
-				<td colspan="2" align="center"><strong>'.$total_kwh.'</strong></td>
+				<td colspan="2" align="center"><strong>'.number_format($total_kwh,0,",",".").'</strong></td>
 			
 			</tr>
 			</table>
 			<br/> <br/>
 			<table>
 				<tr>
-					<td colspan="7"><i>1. Rekening Minimum : (Daya x PLN x Tarif LWB)</i></td>
+					<td colspan="7"><i>1. Biaya Pemakaian LWBP : (Total Pemakaian Kwh LWBP x Tarif LWBP)</i></td>
 				</tr>
 				<tr>
-					<td align="center">'.$ms_kwh['daya'].'</td>
-					<td width="5%">X</td>
-					<td align="center">'.$tarif_pln.'</td>
-					<td width="5%">X</td>
-					<td align="center">'.$tarif_lwb.'</td>
+					<td align="center">'.number_format($subtotal_kwh,0,",",".").'</td>
+					<td width="3%">X</td>
+					<td align="center">'.number_format($tarif_lwbp,0,",",".").'</td>
+					<td width="21.3%"></td>
 					<td width="5%">=</td>
 					<td width="5%">Rp.</td>
-					<td width="14.3%" align="right">'.number_format($harga_minimum,0,",",".").',00</td>
+					<td width="17.3%" align="right">'.number_format($harga_pemakaian_lwbp,0,",",".").',00 </td>
 				</tr>
 			</table>
 			<br/> <br/>
 			<table>
-				<tr>
-					<td colspan="7"><i>2. Biaya Pemakaian : (Faktur Meter x Total Pemakaian Kwh x Tarif LWB)</i></td>
-				</tr>
-				<tr>
-					<td align="center">1</td>
-					<td width="5%">X</td>
-					<td align="center">'.$total_kwh.'</td>
-					<td width="5%">X</td>
-					<td align="center">'.$tarif_lwb.'</td>
-					<td width="5%">=</td>
-					<td width="5%">Rp.</td>
-					<td width="14.3%" align="right">'.number_format($harga_pemakaian,0,",",".").',00 </td>
-				</tr>
-			</table>
+			<tr>
+				<td colspan="7"><i>2. Biaya Pemakaian WBP : (Total Pemakaian Kwh WBP x Tarif WBP)</i></td>
+			</tr>
+			<tr>
+				<td align="center">'.number_format($subtotal_kwh2,0,",",".").'</td>
+				<td width="3%">X</td>
+				<td align="center">'.number_format($tarif_wbp,0,",",".").'</td>
+				<td width="21.3%"></td>
+				<td width="5%">=</td>
+				<td width="5%">Rp.</td>
+				<td width="17.3%" align="right">'.number_format($harga_pemakaian_wbp,0,",",".").',00 </td>
+			</tr>
+		</table>
 			<br/> <br/>
 			<table>
 				<tr>
@@ -312,14 +300,14 @@ class Billing extends CI_Controller {
 					<td width="52.9%">a. Biaya Ditagihkan</td>
 					<td width="5%">=</td>
 					<td width="5%">Rp.</td>
-					<td align="right">'.number_format($biaya_ditagihkan,0,",",".").',00</td>
+					<td width="17.3%" align="right">'.number_format($biaya_ditagihkan,0,",",".").',00</td>
 				</tr>
 				<br/>
 				<tr>
 					<td width="52.9%">b. PPH Pasal 4, Ayat 2</td>
 					<td width="5%">=</td>
 					<td width="5%">Rp.</td>
-					<td align="right">'.number_format($pph,0,",",".").',00</td>
+					<td width="17.3%" align="right">'.number_format($pph,0,",",".").',00</td>
 				</tr>
 				<br/>
 				<tr>
@@ -327,7 +315,7 @@ class Billing extends CI_Controller {
 					<td width="26%">Sub Total</td>
 					<td width="5%">=</td>
 					<td width="5%">Rp.</td>
-					<td align="right">'.number_format($subtotal,0,",",".").',00</td>
+					<td width="17.3%" align="right">'.number_format($total_biaya,0,",",".").',00</td>
 				</tr>
 				<br/>
 				<tr>
@@ -346,7 +334,7 @@ class Billing extends CI_Controller {
 					<td width="26%"><strong>Grand Total</strong></td>
 					<td width="5%"><strong>=</strong></td>
 					<td width="5%"><strong>Rp.</strong></td>
-					<td width="14.3%" align="right"><strong>'.number_format($grandTotal,0,",",".").',00</strong></td>
+					<td width="17.3%" align="right"><strong>'.number_format($grandTotal,0,",",".").',00</strong></td>
 				</tr>
 			</table>
 			<br/> <br/> <br/> <br/> 

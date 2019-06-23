@@ -140,31 +140,6 @@
 								</div>
 
 								<div class="row">
-								<section class="col col-5">
-									<label class="select">
-										<select name="golongan" id="golongan" onchange="changeGolongan(this.value)">
-											<option value="0" selected disabled>Pilih Golongan Tarif</option>
-											<?php foreach($golongan->result() as $row){ 
-											$gol		= array("tarif" => $row->Tarif_KWH, "golongan" => $row->Golongan_Tarif);
-											$gol		= json_encode($gol);
-											?>
-											<option value='<?php echo $gol?>'><?php echo $row->Golongan_Tarif?></option>
-											<?php } ?>
-										</select>
-										<input name="nama_golongan" id="nama_golongan" type="hidden"/>
-										<!--<input type="hidden" name="nama_golongan" id="nama_golongan">-->
-										<i></i>
-									</label>
-								</section>
-								<section class="col col-4">
-									<label class="input">
-										<input type="text" name="tarif_lwb" id="tarif_lwb" placeholder="Tarif LWB">
-									</label>
-								</section>
-								</div>
-								<hr />
-								
-								<div class="row">
 								<label class="label col"><b>Perhitungan Pemakaian KWH : </b> <i>(Value Tanggal Akhir - Value Tanggal Awal)</i></label>
 								</div>
 								<div class="row">
@@ -278,7 +253,7 @@
 								<label class="label col">X</label>
 								<section class="col col-2">
 									<label class="label col">
-										<?php echo $tarif_lwbp; ?>
+										<?php echo $tarif_wbp; ?>
 									</label>
 								</section>
 
@@ -381,12 +356,6 @@
                     getJumlahKwhWbp();
 				}
 	        });
-
-			$('#tarif_pln').on('input', function() {
-				// do something
-				var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-				$("#jumlah_minimum").val(total);
-			});
 			
 		});
 
@@ -397,22 +366,9 @@
 			$("#daya").val(kwh.daya);
 			$("#client_id").val(kwh.no_id);
 			$("#daya2").val(kwh.daya);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
 			//alert(kwh.lokasi);
 		}
-		
-		function changeGolongan(value)
-		{
-			var gol	= $.parseJSON(value);
-			$("#tarif_lwb").val(gol.tarif);
-			$("#tarif_lwb2").val(gol.tarif);
-			$("#tarif_lwb3").val(gol.tarif);
-			$("#tarif_lwb4").val(gol.tarif);
-			$("#nama_golongan").val(gol.golongan);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
-		}
+	
 		
 		function getJumlahKwh()
 		{
@@ -438,7 +394,7 @@
 						$("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
 						// $("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
 						// $("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * <?php echo $tarif_lwbp; ?> * <?php echo $faktur; ?>));
 						// $("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
 					}
 				});
@@ -471,7 +427,7 @@
 						$("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
 						$("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
 						//$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
-						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * <?php echo $tarif_wbp; ?> * <?php echo $faktur; ?>));
 					}
 				});
 			}
