@@ -8,6 +8,13 @@
         function index() {
             $this->load->view("crypto");
         }
+
+        function indexnew() {
+            $this->load->view("indexnew");
+        }
+        function hello() {
+            echo "hello";
+        }
     }
 
 ?>
