@@ -20,7 +20,7 @@ class Riwayat_kwh extends CI_Controller {
 	 */
 	public function index()
 	{
-		$data['riwayat']		= $this->db->query("select * from tb_riwayat,ms_kwh where tb_riwayat.No_ID = ms_kwh.No_ID order by tb_riwayat.Date_Time desc");
+		$data['riwayat']		= $this->db->query("select * from tb_riwayat3,ms_kwh where tb_riwayat3.No_ID = ms_kwh.No_ID order by tb_riwayat3.Date_Time desc");
 		$this->load->view('data_riwayat', $data);
 	}
 
@@ -83,7 +83,7 @@ class Riwayat_kwh extends CI_Controller {
 						}
 
 						$str = "
-							SELECT * FROM tb_riwayat 
+							SELECT * FROM tb_riwayat3 
 							WHERE 
 							Date_Time = '".$posisi_tanggal."'
 							AND 
@@ -166,7 +166,7 @@ class Riwayat_kwh extends CI_Controller {
 		//     }			    
 		}
 		
-		$this->db->insert_batch('tb_riwayat', $data);
+		$this->db->insert_batch('tb_riwayat3', $data);
 
 		$this->session->set_flashdata('msg', 'success'); 
 

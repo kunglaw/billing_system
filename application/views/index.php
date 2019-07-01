@@ -7,7 +7,7 @@
 
 <!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_login1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 14:16:26 GMT -->
 <head>
-	<title>MidTown | Billing System</title>
+	<title>MidPoint Place | Billing System</title>
 
 	<!-- Meta -->
 	<meta charset="utf-8">

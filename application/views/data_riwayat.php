@@ -53,7 +53,7 @@
 					<!--Basic Table Option (Spacing)-->
 					<div class="panel panel-green margin-bottom-40">
 						<div class="panel-heading">
-							<center><h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Data Riwayat KWH</h3></center>
+							<center><h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Data Riwayat Luar Waktu Beban Puncak</h3></center>
 						</div>
 						<div class="panel-body">
 							<table class="table table-striped" id="mytable">

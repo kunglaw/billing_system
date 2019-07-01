@@ -5,7 +5,7 @@
 
 <!-- Mirrored from htmlstream.com/preview/unify-v1.9.4/page_profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Jun 2016 13:38:12 GMT -->
 <head>
-	<title>MidTown | Billing System</title>
+	<title>MidPoint Place | Billing System</title>
 
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -80,12 +80,9 @@
 				<!-- Profile Content -->
 				<div class="col-md-9">
 					<div class="profile-body">
-
-					
-
 						
 					<div class="headline-center margin-bottom-60">
-					<h2><strong>MidTown - Billing System</strong></h2>
+					<h2><strong>MidPoint Place - Billing System</strong></h2>
 					<?php if($this->uri->segment(2) == 'filter'){ ?>
 					<strong>Periode <?php echo date('d F Y' ,strtotime($this->input->post('start')));?> - <?php echo date('d F Y' ,strtotime($this->input->post('finish'))); ?></strong>
 					<?php } ?>
@@ -140,31 +137,6 @@
 								</div>
 
 								<div class="row">
-								<section class="col col-5">
-									<label class="select">
-										<select name="golongan" id="golongan" onchange="changeGolongan(this.value)">
-											<option value="0" selected disabled>Pilih Golongan Tarif</option>
-											<?php foreach($golongan->result() as $row){ 
-											$gol		= array("tarif" => $row->Tarif_KWH, "golongan" => $row->Golongan_Tarif);
-											$gol		= json_encode($gol);
-											?>
-											<option value='<?php echo $gol?>'><?php echo $row->Golongan_Tarif?></option>
-											<?php } ?>
-										</select>
-										<input name="nama_golongan" id="nama_golongan" type="hidden"/>
-										<!--<input type="hidden" name="nama_golongan" id="nama_golongan">-->
-										<i></i>
-									</label>
-								</section>
-								<section class="col col-4">
-									<label class="input">
-										<input type="text" name="tarif_lwb" id="tarif_lwb" placeholder="Tarif LWB">
-									</label>
-								</section>
-								</div>
-								<hr />
-								
-								<div class="row">
 								<label class="label col"><b>Perhitungan Pemakaian KWH : </b> <i>(Value Tanggal Akhir - Value Tanggal Awal)</i></label>
 								</div>
 								<div class="row">
@@ -172,13 +144,13 @@
 								<section class="col col-6">
 									<label class="input">
 										<i class="icon-append fa fa-calendar"></i>
-										<input type="text" name="start" id="start" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Awal">
+										<input type="text" name="finish" id="finish" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Akhir">
 									</label>
 								</section>
 								<section class="col col-6">
-									<label class="input">
+								<label class="input">
 										<i class="icon-append fa fa-calendar"></i>
-										<input type="text" name="finish" id="finish" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Akhir">
+										<input type="text" name="start" id="start" onchange="getJumlahKwh()" placeholder="Pilih Tanggal Awal">
 									</label>
 								</section>
 								<label class="label col"><b> Jumlah Pemakaian KWH LWBP / Luar Waktu Beban Puncak : </b></label>
@@ -225,6 +197,30 @@
 								<section class="col col-3">
 									<label class="input">
 										<input type="text" name="jumlah_newkwh" id="jumlah_newkwh" placeholder="Jumlah">
+									</label>
+								</section>
+								<label class="label col">Kwh</label>
+
+								<label class="label col"><b> Jumlah Pemakaian KWH WBP / TEST : </b></label>
+								</div>
+
+								<div class="row">
+
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="max_kwh3" id="max_kwh3" placeholder="Value Tanggal Akhir">
+									</label>
+								</section>
+								<label class="label col">-</label>
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="min_kwh3" id="min_kwh3" placeholder="Value Tanggal Awal">
+									</label>
+								</section>
+								<label class="label col">=</label>
+								<section class="col col-3">
+									<label class="input">
+										<input type="text" name="jumlah_lwbp" id="jumlah_lwbp" placeholder="Jumlah">
 									</label>
 								</section>
 								<label class="label col">Kwh</label>
@@ -278,7 +274,7 @@
 								<label class="label col">X</label>
 								<section class="col col-2">
 									<label class="label col">
-										<?php echo $tarif_lwbp; ?>
+										<?php echo $tarif_wbp; ?>
 									</label>
 								</section>
 
@@ -366,6 +362,7 @@
 	                $('#finish').datepicker('option', 'minDate', selectedDate);
                     getJumlahKwh();
                     getJumlahKwhWbp();
+					getJumlahKwhlwbp();
 	            }
 	        });
 	        $('#finish').datepicker({
@@ -379,14 +376,9 @@
 	                $('#start').datepicker('option', 'maxDate', selectedDate);
                     getJumlahKwh();
                     getJumlahKwhWbp();
+					getJumlahKwhlwbp();
 				}
 	        });
-
-			$('#tarif_pln').on('input', function() {
-				// do something
-				var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-				$("#jumlah_minimum").val(total);
-			});
 			
 		});
 
@@ -397,22 +389,9 @@
 			$("#daya").val(kwh.daya);
 			$("#client_id").val(kwh.no_id);
 			$("#daya2").val(kwh.daya);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
 			//alert(kwh.lokasi);
 		}
-		
-		function changeGolongan(value)
-		{
-			var gol	= $.parseJSON(value);
-			$("#tarif_lwb").val(gol.tarif);
-			$("#tarif_lwb2").val(gol.tarif);
-			$("#tarif_lwb3").val(gol.tarif);
-			$("#tarif_lwb4").val(gol.tarif);
-			$("#nama_golongan").val(gol.golongan);
-			var total	= ($("#daya").val() * $("#tarif_lwb").val() * $('#tarif_pln').val()).toFixed(2);
-			$("#jumlah_minimum").val(total);
-		}
+	
 		
 		function getJumlahKwh()
 		{
@@ -438,7 +417,7 @@
 						$("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
 						// $("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
 						// $("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
-						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						$("#jumlah_biaya").val(($("#jumlah_kwh").val() * <?php echo $tarif_lwbp; ?> * <?php echo $faktur; ?>));
 						// $("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
 					}
 				});
@@ -471,12 +450,43 @@
 						$("#jumlah_newkwh").val((response.maximum - response.minimum).toFixed(2));
 						$("#jumlah_newkwh2").val((response.maximum - response.minimum).toFixed(2));
 						//$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
-						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * $("#tarif_lwb").val()).toFixed(2));
+						$("#jumlah_biaya2").val(($("#jumlah_newkwh").val() * <?php echo $tarif_wbp; ?> * <?php echo $faktur; ?>));
 					}
 				});
 			}
         }
 
+		function getJumlahKwhlwbp(){
+
+console.log(" getJumlahKwhlwbp run ...")
+
+var start	= $("#start").val();
+var finish	= $("#finish").val();
+var client	= $("#client_id").val();
+
+if(start != "" && finish != "" && client != "")
+{
+	$.ajax({
+		data 	: { tgl_start : start, tgl_finish : finish, client_id : client},
+		type	: "post",
+		url		: "<?php echo base_url()?>billing/get_kwh_lwbp",
+		// url2	: "<?php echo base_url()?>billing/get_newkwh",
+		success	: function(response)
+		{
+			// $("#max_kwh").val(response.maximum);
+			// $("#min_kwh").val(response.minimum);
+			$("#max_kwh3").val(response.maximum);
+			$("#min_kwh3").val(response.minimum);
+			// $("#jumlah_kwh").val((response.maximum - response.minimum).toFixed(2));
+			// $("#jumlah_kwh2").val((response.maximum - response.minimum).toFixed(2));
+			$("#jumlah_lwbp").val((response.maximum - response.minimum).toFixed(2));
+			$("#jumlah_lwbp2").val((response.maximum - response.minimum).toFixed(2));
+			//$("#jumlah_biaya").val(($("#jumlah_kwh").val() * $("#tarif_lwb").val()).toFixed(2));
+			$("#jumlah_lwbp2").val(($("#jumlah_lwbp").val() * <?php echo $tarif_wbp; ?> * <?php echo $faktur; ?>));
+		}
+	});
+}
+}
 	
 	</script>
 	
